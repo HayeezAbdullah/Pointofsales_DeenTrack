@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import MainComponent from "./MainComponent";
 import SideComponent from "./SideComponent";
 import SplashScreen from "./Splashscreen";
-import InvoiceComponent from "./InvoiceComponent";
+import ProductSearch from "./ProductSearch";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
