@@ -1,32 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import InvoiceRow from "./InvoiceRow";
 
 const InvoiceComponent = () => {
+  const [totals, setTotals] = useState([]);
+  const [sum, setSum] = useState(0); // Track the sum of totals
+
+  const handleTotalChange = (total) => {
+    if (total > 0) {
+      setTotals((prevTotals) => {
+        const newTotals = [...prevTotals, total];
+        return newTotals;
+      });
+    } else {
+      console.log("waiting for proper input...");
+    }
+  };
+
   const [products, setProducts] = useState([
-    { productName: "Product 1", unitPrice: 10, quantity: 1 },
-    { productName: "Product 2", unitPrice: 20, quantity: 1 },
+    { productName: "Kottu Mee", unitPrice: 130, quantity: 3 },
   ]);
 
-  const handleQuantityChange = (index, value) => {
-    const newProducts = [...products];
-    newProducts[index].quantity = value;
-    setProducts(newProducts);
-  };
-
-  const handleProductChange = (index, value) => {
-    const newProducts = [...products];
-    newProducts[index].productName = value;
-    setProducts(newProducts);
-  };
-
-  const calculateTotal = () => {
-    return products.reduce((total, product) => {
-      return total + product.unitPrice * product.quantity;
-    }, 0);
+  const addProduct = () => {
+    setProducts([...products, { productName: " ", unitPrice: 3, quantity: 1 }]);
   };
 
   const handlePrint = () => {
-    window.print();
+    console.log("Total is: " + sum);
   };
+
+  // Calculate sum whenever the totals array changes
+  useEffect(() => {
+    const newSum = totals.reduce((acc, curr) => acc + curr, 0);
+    setSum(newSum);
+  }, [totals]);
 
   return (
     <div className="max-w-4xl mx-auto mt-10">
@@ -45,34 +51,7 @@ const InvoiceComponent = () => {
             </thead>
             <tbody>
               {products.map((product, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2 border-b">
-                    <input
-                      type="text"
-                      value={product.productName}
-                      onChange={(e) =>
-                        handleProductChange(index, e.target.value)
-                      }
-                      className="w-full px-2 py-1 border rounded"
-                    />
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    ${product.unitPrice.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    <input
-                      type="number"
-                      value={product.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(index, parseInt(e.target.value))
-                      }
-                      className="w-20 px-2 py-1 border rounded"
-                    />
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    ${(product.unitPrice * product.quantity).toFixed(2)}
-                  </td>
-                </tr>
+                <InvoiceRow key={index} onTotalChange={handleTotalChange} />
               ))}
             </tbody>
           </table>
@@ -81,16 +60,22 @@ const InvoiceComponent = () => {
         <div className="flex justify-end mt-6">
           <div className="font-bold text-xl">
             <span>Total: </span>
-            <span>${calculateTotal().toFixed(2)}</span>
+            <span>{sum}</span>
           </div>
         </div>
 
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-6 gap-4">
           <button
             onClick={handlePrint}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
           >
             Print Invoice
+          </button>
+          <button
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+            onClick={addProduct}
+          >
+            + Add Product
           </button>
         </div>
       </div>
