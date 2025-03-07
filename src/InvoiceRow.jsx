@@ -15,7 +15,7 @@ const InvoiceRow = ({ onTotalChange }) => {
       <td className="px-4 py-2 border-b">
         <input
           type="text"
-          className="w-full px-2 py-1 border rounded"
+          className="w-40 px-2 py-1 border rounded"
           placeholder="Product Name"
         />
       </td>

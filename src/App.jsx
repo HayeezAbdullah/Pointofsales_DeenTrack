@@ -21,12 +21,12 @@ const App = () => {
   return (
     <div className="bg-[#EAEAEA] min-h-screen flex">
       {/* Main Content */}
-      <div className="w-2/3 bg-white p-4">
+      <div className="w-6/10 bg-white p-4">
         <MainComponent />
       </div>
 
       {/* Side Content */}
-      <div className="w-1/3 bg-gray-300 p-4">
+      <div className="w-4/10 bg-gray-300 p-4">
         <SideComponent />
       </div>
     </div>

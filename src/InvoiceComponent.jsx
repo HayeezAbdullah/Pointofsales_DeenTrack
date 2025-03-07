@@ -1,38 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { FaPlus, FaMinus, FaCalculator } from "react-icons/fa";
 import InvoiceRow from "./InvoiceRow";
 
 const InvoiceComponent = () => {
+  const [finaltotal, setFinaltotal] = useState();
   const [totals, setTotals] = useState([]);
-  const [sum, setSum] = useState(0); // Track the sum of totals
-
-  const handleTotalChange = (total) => {
-    if (total > 0) {
-      setTotals((prevTotals) => {
-        const newTotals = [...prevTotals, total];
-        return newTotals;
-      });
-    } else {
-      console.log("waiting for proper input...");
-    }
-  };
-
   const [products, setProducts] = useState([
     { productName: "Kottu Mee", unitPrice: 130, quantity: 3 },
   ]);
 
+  const handleTotalChange = (total, index) => {
+    const updatedTotals = [...totals];
+    updatedTotals[index] = total; // Update the specific index with the new total
+    setTotals(updatedTotals);
+  };
+
   const addProduct = () => {
-    setProducts([...products, { productName: " ", unitPrice: 3, quantity: 1 }]);
+    setProducts([...products, { productName: "", unitPrice: 0, quantity: 1 }]);
+  };
+  const removeProduct = () => {
+    if (products.length > 1) {
+      setProducts(products.slice(0, -1)); // Remove the last product
+    } else {
+      console.log("At least one product should be present!");
+    }
   };
 
-  const handlePrint = () => {
-    console.log("Total is: " + sum);
+  const calculateGrossTotal = () => {
+    const grossTotal = totals.reduce((acc, curr) => acc + (curr || 0), 0);
+    console.log("Gross Total:", grossTotal);
+    setFinaltotal(grossTotal);
   };
-
-  // Calculate sum whenever the totals array changes
-  useEffect(() => {
-    const newSum = totals.reduce((acc, curr) => acc + curr, 0);
-    setSum(newSum);
-  }, [totals]);
 
   return (
     <div className="max-w-4xl mx-auto mt-10">
@@ -51,31 +49,41 @@ const InvoiceComponent = () => {
             </thead>
             <tbody>
               {products.map((product, index) => (
-                <InvoiceRow key={index} onTotalChange={handleTotalChange} />
+                <InvoiceRow
+                  key={index}
+                  onTotalChange={(total) => handleTotalChange(total, index)}
+                />
               ))}
             </tbody>
           </table>
         </div>
-
         <div className="flex justify-end mt-6">
           <div className="font-bold text-xl">
             <span>Total: </span>
-            <span>{sum}</span>
+            <span>{finaltotal}</span>
           </div>
         </div>
 
         <div className="flex justify-center mt-6 gap-4">
           <button
-            onClick={handlePrint}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+            onClick={calculateGrossTotal}
+            className="flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 shadow-md transition-all duration-300"
           >
-            Print Invoice
+            <FaCalculator className="text-yellow-600" /> Gross Total
           </button>
+
           <button
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
             onClick={addProduct}
+            className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 shadow-md transition-all duration-300"
           >
-            + Add Product
+            <FaPlus className="text-green-600" /> Add Product
+          </button>
+
+          <button
+            onClick={removeProduct}
+            className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 shadow-md transition-all duration-300"
+          >
+            <FaMinus className="text-red-600" /> Remove Product
           </button>
         </div>
       </div>
